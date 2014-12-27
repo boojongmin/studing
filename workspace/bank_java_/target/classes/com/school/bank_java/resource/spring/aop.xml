@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">
+	
+	<bean id="serviceAopBean" class="com.school.bank_java.aop.ServiceAop"></bean>
+	
+	
+	<aop:config>
+	    <aop:aspect id="serviceAspect" ref="serviceAopBean">
+	        <aop:pointcut id="servicePointcut"
+	            expression="execution(* com.school.bank_java.service.*.*(..))" />
+	        <aop:before pointcut-ref="servicePointcut" method="beforeMonitor"/>
+	        <aop:after pointcut-ref="servicePointcut" method="afterMonitor"/>
+	        <aop:after-returning pointcut-ref="servicePointcut" method="afterReturningMonitor"/>
+	        <aop:around pointcut-ref="servicePointcut" method="aroundMonitor"/>
+	    </aop:aspect>
+	</aop:config>
+	
+<!-- 	<aop:config>
+	    <aop:aspect id="transactionAspect" ref="transactionAopBean">
+	        <aop:pointcut id="transactionPointcut"
+	            expression="execution(* com.school.bank_java.service.*.*(..))" />
+	        <aop:before pointcut-ref="transactionPointcut" method="beforeMonitor"/>
+	        <aop:after-returning pointcut-ref="transactionPointcut" returning="retVal" method="afterReturningMonitor"/>
+	        <aop:after-throwing pointcut-ref="transactionPointcut" throwing="exception" method="afterThrowingMonitor"/>
+	    </aop:aspect>
+	</aop:config> -->
+	
+	
+	
+	<bean id="transactionAopBean" class="com.school.bank_java.aop.TransactionAop">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+
+</beans>

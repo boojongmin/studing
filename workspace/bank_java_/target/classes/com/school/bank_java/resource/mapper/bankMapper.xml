@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bankMapper">
+  <select id="selectAllUsers" resultType="com.school.bank_java.vo.UsersVo">
+  	SELECT * FROM USERS
+  </select>
+  
+  <select id="selectUserByUserid" parameterType="string" resultType="com.school.bank_java.vo.UsersVo">
+  	SELECT UID, USERID, USERNAME FROM USERS
+	WHERE USERID = #{userid}
+  </select> 
+  
+  <select id="selectMaxAccount" parameterType="int" resultType="String">
+  	select max(account_number) from ACCOUNTS
+    where users_uid = #{users_uid}
+  </select>
+  
+  <insert id="insertAccount" parameterType="com.school.bank_java.vo.AccountsVo">
+  	INSERT INTO ACCOUNTS(USERS_UID, ACCOUNT_NUMBER, AMOUNT)
+	  VALUES( #{users_uid}, #{account_number}, #{amount})
+  </insert>
+  
+  <select id="selectUsersAccount" parameterType="int" resultType="com.school.bank_java.vo.AccountsVo">
+    SELECT account_number, sum(amount) amount FROM ACCOUNTS
+    WHERE users_uid = #{users_uid}
+    GROUP BY account_number
+    ORDER BY account_number DESC
+  </select>
+  
+  <select id="existAccount" parameterType="com.school.bank_java.vo.AccountsVo" resultType="int">
+  	SELECT count(*) FROM ACCOUNTS 
+  	WHERE account_number = #{account_number}
+  	<if test="users_uid > 0 ">
+  		and users_uid = #{users_uid}
+  	</if>
+  </select>
+  
+  <insert id="insertAmount" parameterType="com.school.bank_java.vo.AccountsVo">
+  	INSERT INTO accounts(users_uid, account_number, amount)
+  	<if test="users_uid > 0 ">
+    	VALUES (#{users_uid}, #{account_number}, #{amount})
+  	</if>
+  	<if test="users_uid == 0 ">
+      SELECT users_uid, '${account_number}' , ${amount}
+      FROM accounts
+      WHERE account_number = #{account_number}
+      LIMIT 1,1
+    </if>
+  </insert>
+  
+  <select id="selectTotalAmount" parameterType="string" resultType="int">
+  	SELECT sum(amount) FROM ACCOUNTS
+  	WHERE account_number = #{account_number}
+  	GROUP BY account_number 
+  </select>
+</mapper>
