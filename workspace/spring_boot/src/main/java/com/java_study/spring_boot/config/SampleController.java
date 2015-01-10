@@ -79,4 +79,12 @@ public class SampleController {
 	}
 	
 	
+	@RequestMapping("exception")
+	void requestBody() throws Exception {
+		throw new Exception("오류 발생");
+	}
+	
+	
+	
+	
 }
