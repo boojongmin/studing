@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.school.bank_web.service.LoginService;
 import com.school.bank_web.vo.UsersVo;
 
-//@Component
+//@Component @Service @Repository @Controller
 @Controller
 @RequestMapping("user")
 public class UserController {
@@ -25,7 +25,7 @@ public class UserController {
 	
 	
 	//localhost:8080/bank_web/*.do
-	//localhost:8080/bank_web/test.do
+	//localhost:8080/bank_web/web/user/test
 	@RequestMapping("test")
 	public String test(){
 		return "/user/test";
