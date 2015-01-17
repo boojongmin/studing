@@ -10,20 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.school.bank_web.dao.AccountDao;
 import com.school.bank_web.exception.BankException;
 import com.school.bank_web.vo.AccountsVo;
+import com.school.bank_web.vo.AjaxVo;
 import com.school.bank_web.vo.UsersVo;
 
-//@Component
-//@Service
+@Service
 public class AccountService{
 	@Autowired private AccountDao dao;
 	
 	@Transactional
-	public void createAccount() {
+	public void createAccount(UsersVo usersVo) {
 		
 		AccountsVo accountsVo = new AccountsVo();
-		UsersVo usersVo = 
-				(UsersVo)LoginManager.loginInfo.get("UsersVo");
-		
 		accountsVo.setAmount(0);
 		accountsVo.setUsers_uid(usersVo.getUid());
 		String account_number = dao.selectMaxAccount(usersVo.getUid());
@@ -41,28 +38,13 @@ public class AccountService{
 		}
 	}
 
-	public void viewMyAccount() {
-//		SqlSession sqlSession = sqlSessionFactory.openSession();
-		
-		UsersVo usersVo = 
-				(UsersVo)LoginManager.loginInfo.get("UsersVo");
-			
+	public List<AccountsVo> viewMyAccount(UsersVo usersVo) {
 		List<AccountsVo> list = dao.selectUsersAccount(usersVo.getUid());
-		int i=0;
-		System.out.println("==========================================================================");
-		System.out.println("내 계좌 정보");
-		for(AccountsVo vo : list){
-			System.out.println(String.format("%d.\t%s\t%d ", ++i, vo.getAccount_number(), vo.getAmount()));
-		}
-		System.out.println("==========================================================================");
+		return list;
 	}
 
 	@Transactional
-	public void saveAmount() {
-//		SqlSession sqlSession = sqlSessionFactory.openSession(false);
-		
-		UsersVo usersVo = (UsersVo)LoginManager.loginInfo.get("UsersVo");
-			
+	public void saveAmount(UsersVo usersVo) {
 		AccountsVo accountsVo = new AccountsVo();
 		accountsVo.setUsers_uid(usersVo.getUid());
 		
@@ -112,8 +94,7 @@ public class AccountService{
 	}
 
 	@Transactional
-	public void sendAmount() {
-		UsersVo usersVo = (UsersVo)LoginManager.loginInfo.get("UsersVo");
+	public void sendAmount(UsersVo usersVo) {
 		AccountsVo accountsVo = new AccountsVo();
 		accountsVo.setUsers_uid(usersVo.getUid());
 		
@@ -183,5 +164,19 @@ public class AccountService{
 				}
 			}
 		}
+	}
+
+	public AjaxVo checkExistsAccount(AccountsVo accountsVo) {
+		
+		AjaxVo vo = new AjaxVo();
+		int accountCount = dao.existAccount(accountsVo);
+		if(accountCount > 0){
+			vo.setResultCondition(true);
+			vo.setMessage("계좌가 존재합니다.");
+		}else{
+			vo.setResultCondition(false);
+			vo.setMessage("계좌가 없습니다..");
+		}
+		return vo;
 	}
 }

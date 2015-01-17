@@ -1,5 +1,6 @@
 package com.school.bank_web.controller;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,12 +69,18 @@ public class UserController {
 	@RequestMapping( method = RequestMethod.POST, value="/login")
 	public String login_post(
 			@Valid  @ModelAttribute("usersVo") UsersVo usersVo,
-			BindingResult result
+			BindingResult result,
+			HttpSession session
 			){
-		if(result.hasErrors()){
-			System.out.println("test");
+		UsersVo loginVo = service.doLogin(usersVo.getUserid());
+		if(loginVo == null){
+			result.rejectValue("userid",
+						"error.usersVo", usersVo.getUserid()+ " 아이디가 없습니다.");
+			return "/user/login";
 		}
-		return "/user/login";
+		session.setAttribute("usersVo", loginVo);
+
+		return "redirect:/web/main";
 	}
 
 }

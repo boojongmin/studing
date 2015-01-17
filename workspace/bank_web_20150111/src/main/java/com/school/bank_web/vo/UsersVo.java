@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class UsersVo {
 	private int uid;
 	
-	@NotEmpty
+	@NotEmpty(message="공백은 넣을수 없습니다.")
 	@Length(min=5, max=20, message="아이디는 5~20자 범위내에 있어야합니다.")	
 	private String userid;
 	

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="com.school.bank_web.vo.UsersVo" %>    
+<%@ page import="com.school.bank_web.vo.UsersVo, com.school.bank_web.vo.AccountsVo, java.util.List" %>    
 <%
 String contextPath = request.getContextPath();
 %>
@@ -44,9 +44,7 @@ if(usersVo == null)
             <li role="presentation">
             	<a href="<%=contextPath%>/web/account/viewMyAccount">내계좌보기</a>
             </li>
-            <li role="presentation">
-            	<a href="<%=contextPath%>/web/account/saveAmount">입금</a>
-            </li>
+            <li role="presentation"><a href="#">Contact</a></li>
           </ul>
         </nav>
         <h3 class="text-muted">Bank Web</h3>
@@ -54,7 +52,35 @@ if(usersVo == null)
       
       <div class="row">
       	<div class="col-md-offset-3 col-md-6">
-      		<img src="<%=contextPath %>/image/bank.jpg" />
+      		<table class="table table-striped">
+      			<thead>
+      				<tr>
+      					<th>순서</th>
+      					<th>계좌번호</th>
+      					<th>잔액</th>      					
+      				</tr>
+      			</thead>
+      			<tbody>
+<%
+	List<AccountsVo> list =  (List)request.getAttribute("list");
+	for(int i =0; i< list.size(); i++){
+		AccountsVo vo = list.get(i);
+%>
+					<tr>
+	      				<td><%=i+1 %></td>
+	      				<td><%=vo.getAccount_number() %></td>
+	      				<td><%=vo.getAmount() %></td>
+	      			</tr>
+<%		
+	}
+%>      		      	
+				</tbody>	
+      			
+      		</table>
+      	
+
+      		
+      		
       	</div>
       </div>
 
